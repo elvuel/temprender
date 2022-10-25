@@ -50,7 +50,7 @@ func (trans *Injector) Transport(_ stdcontext.Context, ctx context.Context) erro
 	}
 
 	for _, pattern := range trans.Injections {
-		if ctx.HasKey(pattern.Key) {
+		if ctx.Exist(pattern.Key) {
 			data := ctx.G(pattern.Key)
 
 			var buf *bytes.Buffer

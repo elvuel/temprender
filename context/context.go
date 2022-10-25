@@ -21,12 +21,12 @@ type AttrOperator interface {
 	Setter(string, interface{}) error
 	Getter(string) interface{}
 
-	HasKey(string) bool
-
 	S(string, interface{}) error
 	G(string) interface{}
 
 	PanicableGetter() bool
+	Exist(string) bool
+	Delete(string) error
 }
 
 type Marshaler interface {
@@ -39,7 +39,8 @@ type Unmarshaler interface {
 
 // Context represents temprender data context
 type Context interface {
-	Kind() string
+	Kind(...string) string // for conversion: args non-empty implicit set and return
+	Clear() error
 
 	Marshaler
 	Unmarshaler
@@ -75,6 +76,11 @@ func NewContext(kind string) (Context, error) {
 	}
 
 	return funk()
+}
+
+func Exists(kind string) bool {
+	_, ok := contexts[kind]
+	return ok
 }
 
 func Unmarshal(data []byte) (Context, error) {
