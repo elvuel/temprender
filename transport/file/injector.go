@@ -86,7 +86,7 @@ func (trans *Injector) Transport(_ stdcontext.Context, ctx context.Context) erro
 
 	lpath := filepath.Dir(trans.Target)
 
-	os.MkdirAll(lpath, 0644)
+	os.MkdirAll(lpath, 0755)
 
 	return ioutil.WriteFile(trans.Target, []byte(loadedData), 0644)
 }

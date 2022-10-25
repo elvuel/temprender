@@ -56,7 +56,7 @@ func (trans *Creator) Transport(_ stdcontext.Context, ctx context.Context) error
 
 createFile:
 	lpath := filepath.Dir(trans.Target)
-	os.MkdirAll(lpath, 0644)
+	os.MkdirAll(lpath, 0755)
 
 	f, err := os.Create(trans.Target)
 	if err != nil {
