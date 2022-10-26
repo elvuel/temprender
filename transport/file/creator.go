@@ -21,11 +21,12 @@ const (
 )
 
 type Creator struct {
-	Kind            string   `json:"tr_trans_kind,omitempty"`
-	Target          string   `json:"target,omitempty"`
-	Key             string   `json:"target_ctx_key,omitempty"`
-	ExistedStrategy Strategy `json:"existed_strategy,omitempty"` // target: overwrite, skip, alias
-	AliasExt        string   `json:"alias_ext,omitempty"`
+	Kind            string                               `json:"tr_trans_kind,omitempty"`
+	Target          string                               `json:"target,omitempty"`
+	Key             string                               `json:"target_ctx_key,omitempty"`
+	ExistedStrategy Strategy                             `json:"existed_strategy,omitempty"` // target: overwrite, skip, alias
+	AliasExt        string                               `json:"alias_ext,omitempty"`
+	PreFitlers      []func(io.Reader) (io.Reader, error) `json:"-"` // apply adjust data filters before write
 }
 
 func NewCreatorRegister() (transport.Transporter, error) {
@@ -80,6 +81,13 @@ createFile:
 			"value type for context key[%s] in transporter[%s] should be one of [io.Reader, string, []byte, nil]",
 			trans.Key, FileCreatorTransporterKind,
 		)
+	}
+
+	for fidx, filter := range trans.PreFitlers {
+		buf, err = filter(buf)
+		if err != nil {
+			return fmt.Errorf("apply filter [%d] failed: %v", fidx, err)
+		}
 	}
 
 	_, err = io.Copy(f, buf)

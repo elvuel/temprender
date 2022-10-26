@@ -1,10 +1,13 @@
 package main
 
 import (
+	"bytes"
 	stdctx "context"
+	"io"
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/elvuel/temprender/context"
 	"github.com/elvuel/temprender/task"
@@ -74,6 +77,17 @@ func creatorFixture(tmpl, group string) {
 	tran.Key = filepath.Join(tmpl, t.RenderedEndTag)
 	tran.Target = filepath.Join(targetDir, "greeting.txt")
 
+	upcase := func(r io.Reader) (io.Reader, error) {
+		var buf bytes.Buffer
+		io.Copy(&buf, r)
+		data := buf.String()
+
+		return bytes.NewBufferString(strings.ToUpper(data)), nil
+	}
+
+	tran.PreFitlers = make([]func(io.Reader) (io.Reader, error), 0)
+	tran.PreFitlers = append(tran.PreFitlers, upcase)
+
 	t.RegisterTransporters(group, tran)
 
 }
@@ -124,6 +138,17 @@ placehoder2
 			FmtSpecifier: "%s",
 		},
 	})
+
+	upcase := func(r io.Reader) (io.Reader, error) {
+		var buf bytes.Buffer
+		io.Copy(&buf, r)
+		data := buf.String()
+
+		return bytes.NewBufferString(strings.ToUpper(data)), nil
+	}
+
+	tran.PreFitlers = make([]func(io.Reader) (io.Reader, error), 0)
+	tran.PreFitlers = append(tran.PreFitlers, upcase)
 
 	t.RegisterTransporters(group, tran)
 }

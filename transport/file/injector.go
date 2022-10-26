@@ -22,7 +22,8 @@ type Injector struct {
 	WithAlias bool    `json:"with_alias,omitempty"`
 	AliasExt  string  `json:"alias_ext,omitempty"`
 
-	Injections []*InjectionPattern `json:"injections,omitempty"`
+	Injections []*InjectionPattern                  `json:"injections,omitempty"`
+	PreFitlers []func(io.Reader) (io.Reader, error) `json:"-"` // apply adjust data filters before write
 }
 
 func NewInjectorRegister() (transport.Transporter, error) {
@@ -88,7 +89,23 @@ func (trans *Injector) Transport(_ stdcontext.Context, ctx context.Context) erro
 
 	os.MkdirAll(lpath, 0755)
 
-	return ioutil.WriteFile(trans.Target, []byte(loadedData), 0644)
+	var buf io.Reader
+	buf = bytes.NewBufferString(loadedData)
+
+	var err error
+	for fidx, filter := range trans.PreFitlers {
+		buf, err = filter(buf)
+		if err != nil {
+			return fmt.Errorf("apply filter [%d] failed: %v", fidx, err)
+		}
+	}
+
+	data, err := ioutil.ReadAll(buf)
+	if err != nil {
+		return err
+	}
+
+	return ioutil.WriteFile(trans.Target, data, 0644)
 }
 
 type InjectionPattern struct {
