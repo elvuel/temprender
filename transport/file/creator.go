@@ -21,6 +21,7 @@ const (
 )
 
 type Creator struct {
+	Label           string                               `json:"label,omitempty"`
 	Kind            string                               `json:"tr_trans_kind,omitempty"`
 	Target          string                               `json:"target,omitempty"`
 	Key             string                               `json:"target_ctx_key,omitempty"`
@@ -35,6 +36,13 @@ func NewCreatorRegister() (transport.Transporter, error) {
 
 func NewCreator() (*Creator, error) {
 	return &Creator{Kind: FileCreatorTransporterKind, AliasExt: FileCreatorAliasExt}, nil
+}
+
+func (trans *Creator) Inspection() string {
+	if trans.Label == "" {
+		return fmt.Sprintf("kind: %s for target %s with key %s", trans.Kind, trans.Target, trans.Key)
+	}
+	return trans.Label
 }
 
 func (trans *Creator) Transport(_ stdcontext.Context, ctx context.Context) error {

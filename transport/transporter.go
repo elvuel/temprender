@@ -20,6 +20,7 @@ var (
 
 type Transporter interface {
 	Transport(stdcontext.Context, context.Context) error
+	Inspection() string
 }
 
 type Transporters []Transporter

@@ -43,3 +43,7 @@ func (trans *Puppeteer) Transport(_ stdcontext.Context, ctx context.Context) err
 	encoder.SetIndent("", "\t")
 	return encoder.Encode(ctx)
 }
+
+func (trans *Puppeteer) Inspection() string {
+	return "puppeteer"
+}

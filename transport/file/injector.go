@@ -16,6 +16,7 @@ import (
 )
 
 type Injector struct {
+	Label     string  `json:"label,omitempty"`
 	Kind      string  `json:"kind,omitempty"`
 	Target    string  `json:"target,omitempty"`
 	Fills     *string `json:"fills,omitempty"`
@@ -106,6 +107,13 @@ func (trans *Injector) Transport(_ stdcontext.Context, ctx context.Context) erro
 	}
 
 	return ioutil.WriteFile(trans.Target, data, 0644)
+}
+
+func (trans *Injector) Inspection() string {
+	if trans.Label == "" {
+		return fmt.Sprintf("kind: %s for target %s, with alias?:%v", trans.Kind, trans.Target, trans.WithAlias)
+	}
+	return trans.Label
 }
 
 type InjectionPattern struct {
