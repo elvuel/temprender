@@ -17,7 +17,7 @@ func main() {
 	t.PerformCtx.S("user", "Quick")
 	t.PerformCtx.S("greeter", "temprender")
 
-	t.LoadTempatesFromMap(map[string]string{
+	t.LoadTemplatesFromMap(map[string]string{
 		tmpl: `Hi {{.G "user"}},
 
 Greeting from {{.G "greeter"}}!`,

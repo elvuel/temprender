@@ -105,7 +105,7 @@ func (t *Task) LoadTemplates() error {
 	return nil
 }
 
-func (t *Task) LoadTempatesFromMap(kv map[string]string) error {
+func (t *Task) LoadTemplatesFromMap(kv map[string]string) error {
 	t.initTemplate()
 
 	for file, data := range kv {

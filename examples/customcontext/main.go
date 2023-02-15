@@ -46,7 +46,7 @@ func main() {
 
 	t.PerformCtx = customCtx
 
-	t.LoadTempatesFromMap(map[string]string{
+	t.LoadTemplatesFromMap(map[string]string{
 		tmpl: `Hi {{ .User }},
 
 Greeting from {{ .Greeter }}!(with custom context {{ quote .CtxKind }})
