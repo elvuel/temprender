@@ -207,7 +207,7 @@ func (t *Task) Transport(ctx stdcontext.Context, groups ...string) error {
 			for idx, tran := range trans {
 				err = tran.Transport(ctx, t.PerformCtx)
 				if err != nil {
-					return fmt.Errorf("transport failed for transporter index[%d] with in group `%s`: %v ", idx, group, err)
+					return fmt.Errorf("transport failed for transporter index[%d] with in group `%s`: %v \n[%s]", idx, group, err, tran.Inspection())
 				}
 			}
 		}
